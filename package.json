@@ -1,0 +1,29 @@
+{
+  "name": "redux-cli-setup",
+  "version": "1.0.1",
+  "description": "Generate Redux folder structure with Redux Toolkit, React-Redux, and Redux Persist.",
+  "main": "lib/setup.js",
+  "bin": {
+    "setup-redux": "./index.js"
+  },
+  "scripts": {
+    "postinstall": "npm install @reduxjs/toolkit react-redux redux-persist commander"
+  },
+  "dependencies": {
+    "commander": "^10.0.1"
+  },
+  "keywords": [
+    "redux",
+    "setup",
+    "react",
+    "toolkit",
+    "cli"
+  ],
+  "author": "apusutradhar77@gmail.com",
+  "license": "MIT",
+  "peerDependencies": {
+    "@reduxjs/toolkit": "^2.3.0",
+    "react-redux": "^9.1.2",
+    "redux-persist": "^6.0.0"
+  }
+}
