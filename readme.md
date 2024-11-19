@@ -196,8 +196,8 @@ MIT © [Apu Sutra Dhar]
 
 ## Support 💪
 
-- GitHub Issues: [Report Issues](https://github.com/apucsd/redux-setup-cli/issues)
-- Documentation: [Full Documentation](https://www.npmjs.com/package/redux-setup-cli)
+- GitHub Issues: [Report Issues](https://github.com/apucsd/redux-cli-setup/issues)
+- Documentation: [Full Documentation](https://www.npmjs.com/package/redux-cli-setup)
 
 ---
 
