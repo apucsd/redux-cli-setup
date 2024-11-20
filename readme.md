@@ -2,10 +2,6 @@
 
 A powerful CLI tool to instantly scaffold a production-ready Redux setup with Redux Toolkit, React-Redux, and Redux Persist integration.
 
-![Redux Setup Banner](https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=2000&h=400)
-
-> **Important Note**: Currently, this CLI tool is optimized for Next.js projects with `@` absolute imports configured. Support for other project structures will be added in future releases.
-
 ## Features ✨
 
 - 🛠️ Complete Redux folder structure generation
@@ -14,6 +10,12 @@ A powerful CLI tool to instantly scaffold a production-ready Redux setup with Re
 - 🎯 TypeScript support
 - 🔄 RTK Query setup with base API configuration
 - 🎨 Organized feature-based architecture
+
+## Prerequisites 📋
+
+- Node.js
+- npm or yarn
+- TypeScript project (preferably Next.js and ReactJs)
 
 ## Installation 📥
 
@@ -24,7 +26,7 @@ npm install -g redux-cli-setup
 Or use directly with npx:
 
 ```bash
-npx redux-cli-setup setup-redux
+npx redux-cli-setup
 ```
 
 ## Generated Structure 📁
@@ -45,84 +47,70 @@ src/
     └── hooks.ts
 ```
 
-## File Overview 📝
+## File Breakdown 📝
 
 ### 1. Base Configuration
 
 #### `baseApi.ts`
 
-- RTK Query base configuration
-- Centralized API setup with authentication headers
+- Centralized API configuration
+- Token refresh mechanism
+- Authentication header setup
 - Base URL configuration
-- Tag types definition
-
-```typescript
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-// ... (see generated file for full implementation)
-```
 
 #### `baseReducer.ts`
 
-- Combined reducer setup
-- Redux Persist configuration
-- Authentication persistence setup
+- Combines reducers
+- Configures Redux Persist
+- Handles authentication state persistence
 
 ### 2. Authentication Feature
 
 #### `authSlice.ts`
 
-- User authentication state management
-- Login/logout actions
-- TypeScript interfaces for user data
+- Manages authentication state
+- Provides `setUser` and `logout` actions
+- Defines user type with role-based access
 
 #### `authApi.ts`
 
-- Authentication-related API endpoints
-- Login, registration, password management
-- Email verification endpoints
+- Authentication-related RTK Query endpoints
+- Supports:
+  - User login
+  - Email verification
+  - Password management
+  - Token handling
 
 ### 3. Store Configuration
 
 #### `store.ts`
 
-- Redux store configuration
-- Middleware setup
-- Redux Persist store enhancement
-- TypeScript types for store and dispatch
-
-```typescript
-import { configureStore } from "@reduxjs/toolkit";
-// ... (see generated file for full implementation)
-```
+- Configures Redux store
+- Sets up middleware
+- Integrates Redux Persist
+- Defines TypeScript types for store
 
 #### `hooks.ts`
 
-- Typed hooks for Redux usage
-- `useAppDispatch` and `useAppSelector` utilities
+- Provides typed Redux hooks
+- `useAppDispatch` and `useAppSelector`
 
-### 4. Provider Setup
+### 4. Redux Provider
 
 #### `ReduxProvider.tsx`
 
-- Redux Provider configuration
-- Redux Persist gate integration
-- Client-side wrapper component
+- Wraps application with Redux Provider
+- Implements Redux Persist Gate
 
-## Usage 💻
+## Usage Example 💻
 
-1. Install the package:
-
-```bash
-npm install redux-setup-cli
-```
-
-2. Run the setup command:
+1. Generate Redux structure:
 
 ```bash
-npx setup-redux
+npx redux-cli-setup
 ```
 
-3. Import the provider in your app's root:
+2. Wrap your app with `ReduxProvider`:
 
 ```typescript
 import ReduxProvider from "@/redux/lib/ReduxProvider";
@@ -136,68 +124,62 @@ function App() {
 }
 ```
 
-4. Use Redux in your components:
+3. Use in components:
 
 ```typescript
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setUser } from "@/redux/features/auth/authSlice";
 import { useLoginUserMutation } from "@/redux/features/auth/authApi";
 
 function LoginComponent() {
   const dispatch = useAppDispatch();
   const [loginUser] = useLoginUserMutation();
-
-  // Use Redux functionality
+  // Authentication logic
 }
 ```
 
-## Authentication API Endpoints 🔑
+## Authentication Endpoints 🔐
 
-The generated setup includes the following authentication endpoints:
+- `loginUser`: User authentication
+- `verifyEmail`: Email verification
+- `forgetPassword`: Initiate password recovery
+- `resetPassword`: Complete password reset
+- `changePassword`: Update password
 
-- `loginUser` - User login
-- `verifyEmail` - Email verification
-- `forgetPassword` - Password recovery initiation
-- `resetPassword` - Password reset
-- `changePassword` - Password change for authenticated users
-
-## Best Practices 🎯
+## Best Practices 🌟
 
 1. **State Management**
 
    - Use RTK Query for API calls
-   - Implement proper error handling
-   - Utilize TypeScript for type safety
+   - Implement comprehensive error handling
+   - Leverage TypeScript for type safety
 
 2. **Authentication**
 
-   - Store tokens securely
-   - Implement proper logout cleanup
-   - Handle token expiration
+   - Secure token storage
+   - Implement clean logout
+   - Handle token expiration gracefully
 
-3. **Performance**
-   - Use selective state updates
-   - Implement proper caching strategies
-   - Optimize re-renders with proper selector usage
+3. **Performance Optimization**
+   - Minimize state updates
+   - Implement efficient caching
+   - Optimize component re-renders
 
 ## Contributing 🤝
 
-We welcome contributions! Please follow these steps:
-
 1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
 
 ## License 📄
 
 MIT © [Apu Sutra Dhar]
 
-## Support 💪
+## Support 💬
 
-- GitHub Issues: [Report Issues](https://github.com/apucsd/redux-cli-setup/issues)
-- Documentation: [Full Documentation](https://www.npmjs.com/package/redux-cli-setup)
+- Issues: [GitHub Issues](https://github.com/apucsd/redux-cli-setup/issues)
+- Docs: [NPM Package](https://www.npmjs.com/package/redux-cli-setup)
 
 ---
 
