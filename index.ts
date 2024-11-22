@@ -6,45 +6,47 @@ const { execSync } = require("child_process");
 
 const program = new Command();
 
-program.description("Generate Redux folder structure and files").action(() => {
-  const reduxPath = path.join(process.cwd(), "src", "redux");
+program
+  .description(
+    "Generate Redux folder structure, files, and install necessary packages"
+  )
+  .action(() => {
+    try {
+      // Install necessary packages
+      console.log("Installing necessary packages...");
+      execSync("npm install @reduxjs/toolkit react-redux redux-persist", {
+        stdio: "inherit",
+      });
+      console.log("Packages installed successfully.");
 
-  if (!fs.existsSync(reduxPath)) {
-    fs.mkdirSync(reduxPath, { recursive: true });
-    console.log("Created 'redux' folder in 'src'");
-  }
+      const reduxPath = path.join(process.cwd(), "src", "redux");
 
-  const foldersAndFiles = [
-    { folder: "base", files: ["baseApi.ts", "baseReducer.ts"] },
-    { folder: "features/auth", files: ["authSlice.ts", "authApi.ts"] },
-    { folder: "lib", files: ["ReduxProvider.tsx"] },
-  ];
+      if (!fs.existsSync(reduxPath)) {
+        fs.mkdirSync(reduxPath, { recursive: true });
+        console.log("Created 'redux' folder in 'src'");
+      }
 
-  foldersAndFiles.forEach((folderObj) => {
-    const folderPath = path.join(reduxPath, folderObj.folder);
-
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath, { recursive: true });
-      console.log(`Created folder: ${folderPath}`);
-    }
-
-    folderObj.files.forEach((file) => {
-      const filePath = path.join(folderPath, file);
-      let content = "";
-
-      const requiredPackages = [
-        "@reduxjs/toolkit",
-        "react-redux",
-        "redux-persist",
+      const foldersAndFiles = [
+        { folder: "base", files: ["baseApi.ts", "baseReducer.ts"] },
+        { folder: "features/auth", files: ["authSlice.ts", "authApi.ts"] },
+        { folder: "lib", files: ["ReduxProvider.tsx"] },
       ];
 
-      requiredPackages.forEach((package_) => {
-        execSync(`npm install ${package_}`, { stdio: "inherit" });
-      });
+      foldersAndFiles.forEach((folderObj) => {
+        const folderPath = path.join(reduxPath, folderObj.folder);
 
-      switch (file) {
-        case "baseApi.ts":
-          content = `import {
+        if (!fs.existsSync(folderPath)) {
+          fs.mkdirSync(folderPath, { recursive: true });
+          console.log(`Created folder: ${folderPath}`);
+        }
+
+        folderObj.files.forEach((file) => {
+          const filePath = path.join(folderPath, file);
+          let content = "";
+
+          switch (file) {
+            case "baseApi.ts":
+              content = `import {
   BaseQueryApi,
   BaseQueryFn,
   createApi,
@@ -61,7 +63,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
 
-   if (token) {
+    if (token) {
       headers.set("Authorization", \`Bearer \${token}\`);
     }
 
@@ -76,11 +78,9 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 > = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
 
-  // Handle different error responses and refresh the token if necessary
   if (result?.error?.status === 401) {
     console.log("Sending refresh token");
 
-    // Send a request to refresh the token
     const res = await fetch("http://localhost:5000/api/v1/auth/refresh-token", {
       method: "POST",
       credentials: "include",
@@ -88,16 +88,12 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 
     const data = await res.json();
 
-    // Check if the refresh token request was successful
     if (data?.data?.accessToken) {
-      // Update the user's token in the Redux store
       const user = (api.getState() as RootState).auth.user;
       api.dispatch(setUser({ user, token: data.data.accessToken }));
 
-      // Retry the original request with the new token
       result = await baseQuery(args, api, extraOptions);
     } else {
-      // Handle the case where the refresh token request failed
       api.dispatch(logout());
       console.log("Session expired. Please log in again.");
     }
@@ -111,11 +107,11 @@ export const baseApi = createApi({
   baseQuery: baseQueryWithRefreshToken,
   tagTypes: ["Auth"],
   endpoints: () => ({}),
-});
-          `;
-          break;
-        case "baseReducer.ts":
-          content = `import { baseApi } from "./baseApi";
+});`;
+              break;
+
+            case "baseReducer.ts":
+              content = `import { baseApi } from "./baseApi";
 import authReducer from "../features/auth/authSlice";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -131,9 +127,10 @@ export const baseReducer = {
   [baseApi.reducerPath]: baseApi.reducer,
   auth: persistedAuthReducer,
 };`;
-          break;
-        case "authSlice.ts":
-          content = `import { createSlice } from "@reduxjs/toolkit";
+              break;
+
+            case "authSlice.ts":
+              content = `import { createSlice } from "@reduxjs/toolkit";
 
 type TUser = {
   id: string;
@@ -170,9 +167,10 @@ const authSlice = createSlice({
 
 export const { setUser, logout } = authSlice.actions;
 export default authSlice.reducer;`;
-          break;
-        case "authApi.ts":
-          content = `import { baseApi } from "../../base/baseApi";
+              break;
+
+            case "authApi.ts":
+              content = `import { baseApi } from "../../base/baseApi";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -225,9 +223,10 @@ export const {
   useResetPasswordMutation,
   useVerifyEmailMutation,
 } = authApi;`;
-          break;
-        case "ReduxProvider.tsx":
-          content = `import { persistor, store } from "../store";
+              break;
+
+            case "ReduxProvider.tsx":
+              content = `import { persistor, store } from "../store";
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -241,17 +240,18 @@ const ReduxProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export default ReduxProvider;`;
-          break;
-      }
-      fs.writeFileSync(filePath, content.trim());
-      console.log(`File created: ${filePath}`);
-    });
-  });
+              break;
+          }
 
-  const directFiles = [
-    {
-      name: "store.ts",
-      content: `import { configureStore } from "@reduxjs/toolkit";
+          fs.writeFileSync(filePath, content.trim());
+          console.log(`File created: ${filePath}`);
+        });
+      });
+
+      const directFiles = [
+        {
+          name: "store.ts",
+          content: `import { configureStore } from "@reduxjs/toolkit";
 import { baseReducer } from "./base/baseReducer";
 import { baseApi } from "./base/baseApi";
 import {
@@ -277,24 +277,27 @@ export const store = configureStore({
 export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;`,
-    },
-    {
-      name: "hooks.ts",
-      content: `import { useDispatch, useSelector } from "react-redux";
+        },
+        {
+          name: "hooks.ts",
+          content: `import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "./store";
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();`,
-    },
-  ];
+        },
+      ];
 
-  directFiles.forEach((file) => {
-    const filePath = path.join(reduxPath, file.name);
-    fs.writeFileSync(filePath, file.content.trim());
-    console.log(`File created: ${filePath}`);
+      directFiles.forEach((file) => {
+        const filePath = path.join(reduxPath, file.name);
+        fs.writeFileSync(filePath, file.content.trim());
+        console.log(`File created: ${filePath}`);
+      });
+
+      console.log("Redux setup complete with all dependencies installed.");
+    } catch (error) {
+      console.error("Error setting up Redux:", error.message);
+    }
   });
-
-  console.log("Redux setup complete with relative paths.");
-});
 
 program.parse(process.argv);
