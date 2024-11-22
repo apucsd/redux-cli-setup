@@ -17,12 +17,6 @@ A powerful CLI tool to instantly scaffold a production-ready Redux setup with Re
 - react-redux
 - redux-persist
 
-### These must be installed in your project after running the CLI. If not, use:
-
-```bash
-npm install @reduxjs/toolkit react-redux redux-persist
-```
-
 ## Installation 📥
 
 ```bash
@@ -33,6 +27,12 @@ Or use directly with npx:
 
 ```bash
 npx redux-cli-setup
+```
+
+### These must be installed in your project after running the CLI. If not, use:
+
+```bash
+npm install @reduxjs/toolkit react-redux redux-persist
 ```
 
 ## Generated Structure 📁
