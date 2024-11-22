@@ -2,6 +2,7 @@
 const { Command } = require("commander");
 const fs = require("fs");
 const path = require("path");
+const { execSync } = require("child_process");
 
 const program = new Command();
 
@@ -30,6 +31,17 @@ program.description("Generate Redux folder structure and files").action(() => {
     folderObj.files.forEach((file) => {
       const filePath = path.join(folderPath, file);
       let content = "";
+
+      const requiredPackages = [
+        "@reduxjs/toolkit",
+        "react-redux",
+        "redux-persist",
+      ];
+
+      requiredPackages.forEach((package_) => {
+        execSync(`npm install ${package_}`, { stdio: "inherit" });
+      });
+
       switch (file) {
         case "baseApi.ts":
           content = `import {
