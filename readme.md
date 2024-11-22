@@ -13,9 +13,15 @@ A powerful CLI tool to instantly scaffold a production-ready Redux setup with Re
 
 ## Prerequisites 📋
 
-- Node.js
-- npm or yarn
-- TypeScript project (preferably Next.js and ReactJs)
+- @reduxjs/toolkit
+- react-redux
+- redux-persist
+
+### These must be installed in your project after running the CLI. If not, use:
+
+```bash
+npm install @reduxjs/toolkit react-redux redux-persist
+```
 
 ## Installation 📥
 
